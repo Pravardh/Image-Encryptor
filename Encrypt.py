@@ -1,75 +1,59 @@
-from cv2 import imread, imwrite
-from pickle import load, dump
-from tkinter import ttk,Tk,Label,Button,filedialog
-from glob import glob
-from os import remove
+import cv2
+from tkinter import Tk,Label,Button,filedialog,ttk
+import glob
+import pickle
+import os
 
+def getFiles():
 
-def getvalues():
-	files = glob('*.secure')
-
+	files = glob.glob('*.sec')
 	if len(files)>0:
-		Files['values'] = files
-		Files.current(0)
+		output['values'] = files
+		output.current(0)
 
 
-def space(times = 1):
-	for i in range(times):
-		Label(window,text = '').pack()
+def Encrypt(): 
+	filename = filedialog.askopenfilename(title = 'Select pic to encrypt')
+	img = cv2.imread(filename)
+	Name = filename.split('/')[-1].split('.')[0] + '.sec'
 
-def encrypt():
-	filetype = [('Images','*jpg')]
+	f =  open(Name,'wb')
 
-	filename = filedialog.askopenfilename(
-		title = 'Open image to encrypt!',
-		initialdir = './',
-		filetypes = filetype
-		)
+	pickle.dump(img,f)
 
-	img = imread(filename)
-	form = '.secure'
-
-	Name = filename.split('/')[-1].split('.')[0]
-
-	f = open(Name+form,'wb')
-	dump(img,f)
 	f.close()
-	getvalues()
-	remove(filename)
+	os.remove(filename)
 
-def decrypt():
-	val = Files.get()
 
-	Name = val.split('.')[0]
-	f = open(val,'rb')
+def Decrypt(): 
+	Name = output.get()
+	f = open(Name,'rb')
 
 	while True:
 		try:
-			img = load(f)
-
-		except EOFError: 
+			e = pickle.load(f)
+		except EOFError:
 			break
 
 	f.close()
+	os.remove(Name)
+	Name = Name.split('.')[0]
 
-	imwrite(f"{Name}.png",img)
+	cv2.imwrite(f'{Name}.png',e)
+
 
 
 window = Tk()
-window.geometry('640x480')
-window.resizable(False,False)
+window.title('Image Encryptor')
+window.geometry('400x500')
 
-space()
-Label(window, text = 'Image Encryptor',font =('Canadra',20)).pack()
-space()
+Label(window,text = "Image Encryptor",font = ("Candara",14)).pack(pady=4)
 
-Files = ttk.Combobox(window)
-Files.pack()
-getvalues()
+output = ttk.Combobox(window)
+files = getFiles()
+output.pack()
 
-space(2)
+Button(window,text = "Encrypt",command = Encrypt).pack(pady = 20)
+Button(window,text = "Decrypt",command = Decrypt).pack(pady = 20)
 
-Button(window,text = "Encrypt",font =('Canadra',14),command = encrypt).pack()
-space(2)
-Button(window,text = "Decrypt",font =('Canadra',14),command = decrypt).pack()
 window.mainloop()
