@@ -9,8 +9,6 @@ This is a simple Python application that provides a graphical user interface (GU
 - **Key Generation:** Generates encryption keys securely for use in AES encryption and stores them in a key file.
 - **User Interface:** Provides an intuitive user interface with buttons for encryption and decryption operations, along with a dropdown menu to select encrypted image files for decryption.
 - **File Management:** Handles file operations such as reading, writing, and deleting image files securely from the local file system.
-- **Error Handling:** Includes robust error handling to manage exceptions such as file not found errors and encryption/decryption errors.
-- **Cross-Platform:** Works on multiple platforms including Windows, macOS, and Linux, as it is written in Python.
 
 ## Installation
 
